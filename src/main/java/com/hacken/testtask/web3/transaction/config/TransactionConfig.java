@@ -8,7 +8,7 @@ import org.web3j.protocol.http.HttpService;
 
 @Configuration
 public class TransactionConfig {
-    @Value("${provider.node.url:https://mainnet.infura.io/v3/37ec93cf496347bc989c811922c01aed}")
+    @Value("${provider.node.url}")
     private String providerNodeUrl;
 
     @Bean
