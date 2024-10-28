@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  postgres:
+    container_name: postgres_transaction_service
+    image: postgres:alpine3.16
+    env_file:
+      - .env.postgres
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin_transaction_service
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  transaction_service:
+    image: transaction-service:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: transaction_service
+    ports:
+      - "8095:8095"
+      - "5005:5005"
+    networks:
+      - postgres
+    depends_on:
+      - postgres
+    restart: on-failure
+    environment:
+      DB_HOST: "postgres"
+      PROVIDER_NODE_URL: "https://mainnet.infura.io/v3/37ec93cf496347bc989c811922c01aed"
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+
+networks:
+  spring:
+    driver: bridge
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
