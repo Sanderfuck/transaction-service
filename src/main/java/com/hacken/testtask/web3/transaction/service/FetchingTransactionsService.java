@@ -56,7 +56,7 @@ public class FetchingTransactionsService {
 
             BigInteger lastProcessedBlockNumber = lastProcessedBlock.add(BigInteger.ONE);
 
-            if (lastProcessedBlockNumber.compareTo(latestBlockNumber) > 0) {
+            if (lastProcessedBlockNumber.compareTo(latestBlockNumber) <= 0) {
 
                 EthBlock ethBlock = Web3jProtocol.ethGetBlockByNumber(
                     DefaultBlockParameter.valueOf(lastProcessedBlockNumber), true

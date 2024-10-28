@@ -45,6 +45,7 @@ docker-compose up
 ```
 
 ### 4. Links for work with application
+For start fetching transactions you need to trigger start endpoint in swagger ui
 - Follow this link for open swagger and test API:
 ```
 http://localhost:8095/swagger-ui/index.html
